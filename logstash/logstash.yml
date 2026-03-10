@@ -1,0 +1,13 @@
+# ======================== Logstash Configuration ==============================
+#
+# Logstash settings (not the pipeline — that's in conf.d/pipeline.conf)
+# This file controls Logstash itself: monitoring, queue behavior, etc.
+
+# Node name for identification
+node.name: "logstash"
+
+# Where pipeline configs live inside the container
+path.config: /usr/share/logstash/pipeline
+
+# Disable monitoring to Elasticsearch for now (simplifies setup)
+monitoring.enabled: false

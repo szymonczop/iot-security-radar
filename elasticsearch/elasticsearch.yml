@@ -1,0 +1,40 @@
+# ======================== Elasticsearch Configuration =========================
+#
+# Elasticsearch is a search engine database. Unlike traditional databases
+# (PostgreSQL, MySQL) that store data in rows/columns, Elasticsearch stores
+# "documents" (JSON objects) and indexes every field for fast full-text search.
+#
+# Think of it like: BigQuery for logs — optimized for searching, filtering,
+# and aggregating massive amounts of event data in near-real-time.
+
+# Cluster name — groups multiple Elasticsearch nodes together
+cluster.name: "iot-security-radar"
+
+# Node name — identifies this specific Elasticsearch instance
+node.name: "elasticsearch01"
+
+# Network — listen on all interfaces so other Docker containers can reach us
+network.host: 0.0.0.0
+
+# Discovery — single node, no cluster discovery needed
+discovery.type: single-node
+
+# ======================== Security & TLS ======================================
+
+# Enable security features
+xpack.security.enabled: true
+
+# TLS for HTTP API (port 9200) — how Kibana, Logstash, and you connect
+xpack.security.http.ssl:
+  enabled: true
+  certificate: /usr/share/elasticsearch/config/certs/wildcard.local.flex.cert.pem
+  key: /usr/share/elasticsearch/config/certs/wildcard.local.flex.key.nopass.pem
+  certificate_authorities: /usr/share/elasticsearch/config/certs/ca-chain.cert.pem
+
+# TLS for transport layer (port 9300) — node-to-node communication
+xpack.security.transport.ssl:
+  enabled: true
+  verification_mode: certificate
+  certificate: /usr/share/elasticsearch/config/certs/wildcard.local.flex.cert.pem
+  key: /usr/share/elasticsearch/config/certs/wildcard.local.flex.key.nopass.pem
+  certificate_authorities: /usr/share/elasticsearch/config/certs/ca-chain.cert.pem

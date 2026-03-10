@@ -1,0 +1,43 @@
+# ======================== Filebeat Configuration ==============================
+#
+# Filebeat is the "data collector" — like a Fivetran/Airbyte connector.
+# It watches files for new lines, reads them, and ships them to Logstash.
+# It's lightweight and designed to run on every machine that generates logs.
+#
+# Key concept: Filebeat remembers WHERE it left off in each file (using a
+# "registry"). So if it restarts, it picks up where it stopped — no data loss.
+
+# ============================== Inputs ========================================
+# Inputs define WHERE Filebeat reads data from
+
+filebeat.inputs:
+
+# IoT network traffic logs (NDJSON format)
+- type: filestream
+  id: iot-network-traffic
+  enabled: true
+  paths:
+    - /usr/share/filebeat/logs/*.json
+  parsers:
+    - ndjson:
+        target: ""
+        add_error_key: true
+        overwrite_keys: true
+
+# ============================== Output ========================================
+# Output defines WHERE Filebeat sends data
+
+output.logstash:
+  hosts: ["logstash.local:5044"]
+  ssl.enabled: true
+  ssl.certificate: "/usr/share/filebeat/certs/wildcard.local.flex.cert.pem"
+  ssl.key: "/usr/share/filebeat/certs/wildcard.local.flex.key.nopass.pem"
+  ssl.certificate_authorities:
+    - /usr/share/filebeat/certs/ca-chain.cert.pem
+
+# ============================== Processors ====================================
+# Processors modify events before they're sent — like transforms in a pipeline
+
+processors:
+  - add_host_metadata:
+      when.not.contains.tags: forwarded

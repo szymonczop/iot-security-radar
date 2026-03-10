@@ -1,0 +1,34 @@
+# ======================== Kibana Configuration ================================
+#
+# Kibana is the GUI for Elasticsearch. Think of it as Tableau/Looker
+# but specifically designed for log data and security operations.
+#
+# It connects to Elasticsearch, lets you search logs, build dashboards,
+# set up alerts, and manage the whole Elastic Stack from a web browser.
+
+# Server name shown in the Kibana UI
+server.name: "kibana"
+
+# Listen on all interfaces so you can access from your Mac browser
+server.host: "0.0.0.0"
+
+# Port — you'll open http://localhost:5601 in your browser
+server.port: 5601
+
+# ======================== Elasticsearch Connection ============================
+#
+# Kibana needs to know where Elasticsearch is and how to authenticate.
+# We use the container hostname (elasticsearch01.local) since they're
+# on the same Docker network.
+
+elasticsearch.hosts: ["https://elasticsearch01.local:9200"]
+elasticsearch.username: "kibana_system"
+elasticsearch.password: "changeme"
+
+# Tell Kibana to trust our CA chain when connecting to Elasticsearch
+elasticsearch.ssl.certificateAuthorities: ["/usr/share/kibana/config/certs/ca-chain.cert.pem"]
+elasticsearch.ssl.verificationMode: "certificate"
+
+# ======================== Alerting ============================================
+# Required to enable Kibana Rules / Alerting. Must be 32+ characters.
+xpack.encryptedSavedObjects.encryptionKey: "iot-radar-thesis-encryption-key-2026"

@@ -1,0 +1,86 @@
+{
+  "normal": {
+    "tactic": null,
+    "technique": null,
+    "technique_name": null,
+    "severity": null
+  },
+  "port_scan": {
+    "tactic": "Discovery",
+    "technique": "T1046",
+    "technique_name": "Network Service Discovery",
+    "severity": "medium"
+  },
+  "brute_force_ssh": {
+    "tactic": "Credential Access",
+    "technique": "T1110.001",
+    "technique_name": "Brute Force: Password Guessing",
+    "severity": "high"
+  },
+  "brute_force_http": {
+    "tactic": "Credential Access",
+    "technique": "T1110.001",
+    "technique_name": "Brute Force: Password Guessing",
+    "severity": "high"
+  },
+  "brute_force": {
+    "tactic": "Credential Access",
+    "technique": "T1110.001",
+    "technique_name": "Brute Force: Password Guessing",
+    "severity": "high"
+  },
+  "dns_exfiltration": {
+    "tactic": "Exfiltration",
+    "technique": "T1048.001",
+    "technique_name": "Exfiltration Over Alternative Protocol",
+    "severity": "critical"
+  },
+  "ddos_flood": {
+    "tactic": "Impact",
+    "technique": "T1498.001",
+    "technique_name": "Network Denial of Service: Direct Network Flood",
+    "severity": "critical"
+  },
+  "dos": {
+    "tactic": "Impact",
+    "technique": "T1499.001",
+    "technique_name": "Endpoint Denial of Service: OS Exhaustion Flood",
+    "severity": "high"
+  },
+  "unauthorized_device": {
+    "tactic": "Initial Access",
+    "technique": "T1200",
+    "technique_name": "Hardware Additions",
+    "severity": "low"
+  },
+  "xss": {
+    "tactic": "Initial Access",
+    "technique": "T1189",
+    "technique_name": "Drive-by Compromise",
+    "severity": "high"
+  },
+  "injection": {
+    "tactic": "Execution",
+    "technique": "T1059",
+    "technique_name": "Command and Scripting Interpreter",
+    "severity": "critical"
+  },
+  "backdoor": {
+    "tactic": "Persistence",
+    "technique": "T1505.003",
+    "technique_name": "Server Software Component: Web Shell",
+    "severity": "critical"
+  },
+  "ransomware": {
+    "tactic": "Impact",
+    "technique": "T1486",
+    "technique_name": "Data Encrypted for Impact",
+    "severity": "critical"
+  },
+  "mitm": {
+    "tactic": "Credential Access",
+    "technique": "T1557",
+    "technique_name": "Adversary-in-the-Middle",
+    "severity": "high"
+  }
+}

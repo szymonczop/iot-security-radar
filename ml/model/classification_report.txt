@@ -1,0 +1,18 @@
+IoT Security Radar — Classification Report
+============================================================
+
+                  precision    recall  f1-score   support
+
+        backdoor       1.00      1.00      1.00         7
+     brute_force       0.90      0.88      0.89       580
+      ddos_flood       0.96      0.93      0.94       956
+dns_exfiltration       1.00      1.00      1.00         9
+             dos       0.89      0.91      0.90       338
+       injection       0.74      0.76      0.75       322
+          normal       1.00      1.00      1.00      5900
+       port_scan       1.00      0.99      1.00      1777
+             xss       0.92      0.95      0.93      1111
+
+        accuracy                           0.97     11000
+       macro avg       0.93      0.94      0.93     11000
+    weighted avg       0.97      0.97      0.97     11000

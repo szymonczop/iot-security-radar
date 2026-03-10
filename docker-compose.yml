@@ -1,0 +1,136 @@
+# =============================================================================
+# IoT Security Radar — Docker Compose
+# =============================================================================
+#
+# This file defines all the services (containers) that make up the system.
+# Run with: docker-compose up -d
+# Stop with: docker-compose down
+# See logs: docker-compose logs -f <service-name>
+#
+# ARCHITECTURE:
+# Filebeat → Logstash → Elasticsearch → Kibana
+# (collect)   (process)   (store)        (visualize)
+
+services:
+
+  # ===========================================================================
+  # ELASTICSEARCH — The Database
+  # ===========================================================================
+  # What: A search engine that stores and indexes all your log data
+  # Why:  Optimized for fast searching/filtering across millions of events
+  # Port: 9200 (HTTP API) — you can query it directly with curl
+  # ===========================================================================
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.0
+    container_name: elasticsearch01
+    hostname: elasticsearch01.local
+    environment:
+      # Memory limit — Elasticsearch is memory-hungry
+      # 1GB is enough for development. Production would use 4-16GB+
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      # Set the built-in 'elastic' superuser password
+      - ELASTIC_PASSWORD=changeme
+    volumes:
+      # Mount our config file into the container
+      - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      # Mount TLS certificates
+      - ./tls:/usr/share/elasticsearch/config/certs:ro
+      # Persistent data — survives container restarts
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      # Expose port 9200 so you can access from your Mac
+      # Try: curl -k -u elastic:changeme https://localhost:9200
+      - "9200:9200"
+    networks:
+      - iot-radar-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -k -u elastic:changeme https://localhost:9200/_cluster/health | grep -q '\"status\"'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # ===========================================================================
+  # KIBANA — The Dashboard / GUI
+  # ===========================================================================
+  # What: Web interface for searching logs, building dashboards, setting alerts
+  # Why:  Makes Elasticsearch data visual and interactive
+  # Port: 5601 — open http://localhost:5601 in your browser
+  # ===========================================================================
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.17.0
+    container_name: kibana
+    hostname: kibana.local
+    volumes:
+      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+      - ./tls:/usr/share/kibana/config/certs:ro
+    ports:
+      - "5601:5601"
+    networks:
+      - iot-radar-net
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  # ===========================================================================
+  # LOGSTASH — The Transformation Layer
+  # ===========================================================================
+  # What: Receives logs, parses/enriches them, sends to Elasticsearch
+  # Why:  Like dbt/Spark — transforms raw data into structured, useful format
+  # Port: 5044 — Filebeat sends data here
+  # ===========================================================================
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.17.0
+    container_name: logstash
+    hostname: logstash.local
+    environment:
+      - LS_JAVA_OPTS=-Xms512m -Xmx512m
+    volumes:
+      - ./logstash/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      # Mount our conf.d as the ENTIRE pipeline directory
+      # This replaces the default logstash.conf that ships with the Docker image
+      - ./logstash/conf.d:/usr/share/logstash/pipeline:ro
+      - ./tls:/usr/share/logstash/config/certs:ro
+    ports:
+      - "5044:5044"
+    networks:
+      - iot-radar-net
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  # ===========================================================================
+  # FILEBEAT — The Data Collector
+  # ===========================================================================
+  # What: Watches log files and ships new lines to Logstash
+  # Why:  Lightweight collector — runs on every machine that generates logs
+  # Like: Fivetran/Airbyte connector but for log files
+  # ===========================================================================
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.17.0
+    container_name: filebeat
+    hostname: filebeat.local
+    user: root
+    command: filebeat -e --strict.perms=false
+    volumes:
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./tls:/usr/share/filebeat/certs:ro
+      - ./sample-logs:/usr/share/filebeat/logs:ro
+      - filebeat-registry:/usr/share/filebeat/data
+    networks:
+      - iot-radar-net
+    depends_on:
+      - logstash
+
+# =============================================================================
+# VOLUMES — Persistent storage that survives container restarts
+# =============================================================================
+volumes:
+  elasticsearch-data:
+  filebeat-registry:    # Remembers which files/offsets were already shipped — prevents re-indexing on restart
+
+# =============================================================================
+# NETWORKS — Internal network so containers can talk to each other
+# =============================================================================
+networks:
+  iot-radar-net:
+    driver: bridge

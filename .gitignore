@@ -1,0 +1,46 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# TLS certificates (generate with bash tls/generate-certs.sh)
+tls/*.pem
+tls/*.pkcs12
+tls/*.key
+tls/*.crt
+tls/*.p12
+
+# Sample logs — generated at runtime
+sample-logs/demo_traffic.json
+sample-logs/live_traffic.json
+sample-logs/toniot_traffic.json
+sample-logs/simulated_traffic.json
+
+# Datasets — download from HuggingFace (see README)
+datasets/toniot/*.csv
+datasets/toniot/*.parquet
+
+# Personal / Claude-specific context
+CLAUDE.md
+.claude/
+tutorials/
+
+# Empty placeholder dirs (kept via .gitkeep if needed)
+dashboards/
+data-generator/
+docs/
+
+# IDE
+.idea/
+.vscode/
+*.swp
