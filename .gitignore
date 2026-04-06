@@ -38,6 +38,9 @@ tutorials/
 # Project planning (local only)
 PROJECT_PLAN.md
 
+# Article drafts (local only)
+artykul/
+
 # Empty placeholder dirs (kept via .gitkeep if needed)
 dashboards/
 data-generator/
