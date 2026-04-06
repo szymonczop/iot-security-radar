@@ -95,14 +95,28 @@ Create a Data View for the `iot-radar-*` index pattern in **Stack Management →
 
 ---
 
+## Python Setup
+
+```bash
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+```
+
+All Python commands below assume the venv is activated or use `.venv/bin/python3` explicitly.
+
+---
+
+## Sample Data
+
+When the stack starts, Filebeat automatically ships `sample-logs/network_traffic.json` (15 labeled events) to Elasticsearch. These appear in Kibana immediately — no extra steps needed to get started.
+
+---
+
 ## Run the Live Demo
 
 Captures real WiFi traffic + injects simulated attacks, scores everything with the ML model, and sends predictions to Elasticsearch in real time.
 
 ```bash
-python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
-
 # Requires root (tshark needs raw socket access)
 sudo .venv/bin/python3 scripts/live_demo_with_attacks.py --minutes 3 --attacks 300
 ```
@@ -113,22 +127,22 @@ Watch the Kibana dashboards update live.
 
 ## ML Attack Classifier
 
-A pre-trained Random Forest model is included in `ml/model/`. It achieves **97% accuracy** on the NF-ToN-IoT-v2 benchmark (9 attack classes + normal).
+A pre-trained Random Forest model is included in `ml/model/` — no retraining needed to use the project. It achieves **97% accuracy** on the NF-ToN-IoT-v2 benchmark (9 attack classes + normal).
 
 For a full explanation of the training pipeline, feature engineering, evaluation results, and known limitations, see **[ml/ML_METHODOLOGY.md](ml/ML_METHODOLOGY.md)**.
 
-To re-score all benchmark events:
+To re-score all benchmark events (requires the stack to be running):
 
 ```bash
-python3 scripts/batch_score_all.py
+.venv/bin/python3 scripts/batch_score_all.py
 ```
 
 ### Retrain from scratch (optional)
 
-Download the NF-ToN-IoT-v2 dataset first (see below), then:
+Requires the stack to be running and the NF-ToN-IoT-v2 dataset (see below):
 
 ```bash
-python3 ml/train_model.py
+.venv/bin/python3 ml/train_model.py
 ```
 
 ---
@@ -171,10 +185,13 @@ iot-security-radar/
 ├── scripts/
 │   ├── live_demo_with_attacks.py  # Live WiFi capture + attack injection
 │   ├── live_demo.py               # Live WiFi capture only
-│   ├── capture_traffic_flows.py   # Flow-based tshark capture
+│   ├── capture_traffic_flows.py   # Flow-based tshark capture (current)
+│   ├── capture_traffic.py         # Per-packet capture (legacy, kept for reference)
 │   ├── generate_attacks.py        # Simulated attack log generator
 │   ├── adapt_toniot.py            # Convert NF-ToN-IoT CSV → NDJSON
 │   └── batch_score_all.py         # Score all benchmark events
+├── datasets/
+│   └── toniot/                    # Place NF-ToN-IoT-v2 CSVs here (see below)
 ├── ml/
 │   ├── train_model.py          # Train Random Forest classifier
 │   ├── score_and_index.py      # Score events, index predictions to ES
