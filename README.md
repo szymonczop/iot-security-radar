@@ -159,7 +159,7 @@ https://huggingface.co/datasets/Western-OC2-Lab/NF-ToN-IoT-v2
 Place the CSV files in `datasets/toniot/`, then run:
 
 ```bash
-python3 scripts/adapt_toniot.py
+.venv/bin/python3 scripts/adapt_toniot.py
 ```
 
 ---
