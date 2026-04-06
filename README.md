@@ -59,7 +59,7 @@ Local IoT network monitor with real-time attack detection, ML-based traffic clas
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/<your-username>/iot-security-radar.git
+git clone https://github.com/szymonczop/iot-security-radar.git
 cd iot-security-radar
 ```
 
@@ -100,7 +100,8 @@ Create a Data View for the `iot-radar-*` index pattern in **Stack Management →
 Captures real WiFi traffic + injects simulated attacks, scores everything with the ML model, and sends predictions to Elasticsearch in real time.
 
 ```bash
-pip install -r requirements.txt
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
 
 # Requires root (tshark needs raw socket access)
 sudo .venv/bin/python3 scripts/live_demo_with_attacks.py --minutes 3 --attacks 300
@@ -214,17 +215,18 @@ SOC dashboards use `iot-radar-*`. ML predictions dashboards use `iot-radar-predi
 
 ## MITRE ATT&CK Coverage
 
-The classifier maps predictions to 11 MITRE techniques across 7 tactics:
+The classifier maps predictions to 8 MITRE techniques across 6 tactics:
 
-| Tactic | Example Techniques |
-|--------|--------------------|
-| Initial Access | T1190 (Exploit Public-Facing App) |
-| Execution | T1059 (Command & Scripting Interpreter) |
-| Persistence | T1098 (Account Manipulation) |
-| Discovery | T1046 (Network Service Scanning) |
-| Lateral Movement | T1021 (Remote Services) |
-| Command and Control | T1071 (App Layer Protocol) |
-| Impact | T1498 (Network DoS) |
+| Tactic | Technique | Attack Class |
+|--------|-----------|--------------|
+| Discovery | T1046 — Network Service Discovery | `port_scan` |
+| Credential Access | T1110.001 — Brute Force: Password Guessing | `brute_force` |
+| Exfiltration | T1048.001 — Exfiltration Over Alternative Protocol | `dns_exfiltration` |
+| Impact | T1498.001 — Direct Network Flood | `ddos_flood` |
+| Impact | T1499.001 — OS Exhaustion Flood | `dos` |
+| Initial Access | T1189 — Drive-by Compromise | `xss` |
+| Execution | T1059 — Command and Scripting Interpreter | `injection` |
+| Persistence | T1505.003 — Web Shell | `backdoor` |
 
 ---
 
