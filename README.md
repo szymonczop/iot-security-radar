@@ -247,6 +247,12 @@ The classifier maps predictions to 8 MITRE techniques across 6 tactics:
 
 ---
 
+## Publication
+
+This repository was created as part of a cybersecurity engineering thesis. The full paper (in Polish) is available in [`artykul/szymonczop_cybersec.pdf`](artykul/szymonczop_cybersec.pdf).
+
+---
+
 ## License
 
 MIT
