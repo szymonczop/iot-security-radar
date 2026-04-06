@@ -35,6 +35,9 @@ CLAUDE.md
 .claude/
 tutorials/
 
+# Project planning (local only)
+PROJECT_PLAN.md
+
 # Empty placeholder dirs (kept via .gitkeep if needed)
 dashboards/
 data-generator/

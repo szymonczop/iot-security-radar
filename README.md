@@ -114,6 +114,8 @@ Watch the Kibana dashboards update live.
 
 A pre-trained Random Forest model is included in `ml/model/`. It achieves **97% accuracy** on the NF-ToN-IoT-v2 benchmark (9 attack classes + normal).
 
+For a full explanation of the training pipeline, feature engineering, evaluation results, and known limitations, see **[ml/ML_METHODOLOGY.md](ml/ML_METHODOLOGY.md)**.
+
 To re-score all benchmark events:
 
 ```bash
@@ -175,6 +177,7 @@ iot-security-radar/
 ├── ml/
 │   ├── train_model.py          # Train Random Forest classifier
 │   ├── score_and_index.py      # Score events, index predictions to ES
+│   ├── ML_METHODOLOGY.md       # Full ML pipeline documentation
 │   └── model/
 │       ├── classifier.joblib       # Pre-trained Random Forest
 │       ├── label_encoder.joblib    # Class label mapping
@@ -183,8 +186,7 @@ iot-security-radar/
 │       ├── classification_report.txt
 │       ├── confusion_matrix.png
 │       └── feature_importance.png
-├── requirements.txt
-└── PROJECT_PLAN.md             # Full phase plan + thesis notes
+└── requirements.txt
 ```
 
 ---
